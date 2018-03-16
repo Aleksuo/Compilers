@@ -11,8 +11,10 @@ namespace Mini_PL_Interpreter
         static void Main(string[] args)
         {
             String input = Console.ReadLine();
-            Interpreter interpreter = new Interpreter(input);
-            Console.WriteLine(interpreter.expr());
+            Scanner scanner = new Scanner(input);
+            Parser parser = new Parser(scanner);
+            Interpreter interpreter = new Interpreter(parser);
+            Console.WriteLine(interpreter.run());
             Console.ReadKey();
         }
     }
