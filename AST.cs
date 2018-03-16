@@ -28,4 +28,9 @@ namespace Mini_PL_Interpreter
         public opNode(AST left, AST right, Token op) 
         : base(left,right,op){}
     }
+
+    class unaryOpNode : AST{
+        public unaryOpNode(AST left, Token op)
+        : base(left, null, op){}
+    }
 }

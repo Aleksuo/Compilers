@@ -18,6 +18,16 @@ namespace Mini_PL_Interpreter
             return Int32.Parse(node.token.getLexeme());
         }
 
+        public int visit_unaryOpNode(AST node){
+            TokenType type = node.token.getType();
+            if(type == TokenType.PLUS){
+                return +this.visit(node.left);
+            }else if(type == TokenType.MINUS){
+                return -this.visit(node.left);
+            }
+            return 0;
+        }
+
         public int visit_opNode(AST node){
             TokenType type = node.token.getType();
             if(type == TokenType.PLUS){
