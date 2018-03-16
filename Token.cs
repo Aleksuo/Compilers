@@ -10,8 +10,10 @@ namespace Mini_PL_Interpreter
     {
         PLUS, MINUS, MULT, DIV, INTEGER,
         EOF, ERROR, LEFTPAREN, RIGHTPAREN,
-        AND, OR, COLON, SEMICOLON, ID, FOR,
-        IN, DO 
+        AND, OR, NOT, EQUALS, COLON, SEMICOLON, ID, FOR,
+        IN, DO, ASSIGN, RANGE, VAR, END, READ, 
+        PRINT, INT, STRING, BOOL, ASSERT, BOOLEAN, 
+        STR
     }
 
     class Token

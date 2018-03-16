@@ -11,10 +11,29 @@ namespace Mini_PL_Interpreter
         private int pos;
         private string text;
 
+        private Dictionary<string, Token> reserved_keywords;
+
         public Scanner(string text){
             this.text = text;
             this.pos = 0;
+            initKeywords();
         }
+
+        public void initKeywords(){
+            reserved_keywords = new Dictionary<string,Token>();
+
+            reserved_keywords["var"] = new Token(TokenType.VAR,"");
+            reserved_keywords["for"] = new Token(TokenType.FOR,"");
+            reserved_keywords["end"] = new Token(TokenType.END,"");
+            reserved_keywords["in"]  = new Token(TokenType.IN,"");
+            reserved_keywords["do"]  = new Token(TokenType.DO,"");
+            reserved_keywords["read"] = new Token(TokenType.READ, "");
+            reserved_keywords["print"] = new Token(TokenType.PRINT, "");
+            reserved_keywords["int"] = new Token(TokenType.INT, "");
+            reserved_keywords["string"] = new Token(TokenType.STRING, "");
+            reserved_keywords["bool"] = new Token(TokenType.BOOL, "");
+            reserved_keywords["assert"] = new Token(TokenType.ASSERT, "");        
+            }
 
          public void advance()
         {
@@ -34,6 +53,8 @@ namespace Mini_PL_Interpreter
         }
 
 
+
+
         public string integer()
         {
             StringBuilder number = new StringBuilder();
@@ -43,12 +64,29 @@ namespace Mini_PL_Interpreter
                 char? peek = this.peekNextChar();
                 if (peek == null || !Char.IsDigit((char)peek))
                     break;
-                this.pos++;
+                this.advance();
                 number.Append(this.text[this.pos]);
             }
             this.advance();
             return number.ToString();
 
+        }
+
+        public Token identifier(){
+            StringBuilder id = new StringBuilder();
+            while(Char.IsLetter(this.text[this.pos]) 
+            || Char.IsDigit(this.text[this.pos])){
+                id.Append(this.text[this.pos]);
+                if(this.peekNextChar() == null){
+                    this.advance();
+                    break;
+                }
+                this.advance();
+            }
+            if(reserved_keywords.ContainsKey(id.toString())){
+                return reserved_keywords.TryGetValue(id.toString());
+            }
+            return new Token(TokenType.ID, id.toString());
         }
 
         public Token nextToken()
@@ -107,6 +145,33 @@ namespace Mini_PL_Interpreter
             {               
                 return new Token(TokenType.INTEGER, this.integer());
             }
+
+            if(Char.IsLetter(newChar)){
+                return this.identifier();
+            }
+
+            if(newChar == ';'){
+                return new Token(TokenType.SEMICOLON, newChar.toString());
+            }
+
+            if(newChar == ':'){
+                this.advance()
+                if(this.text[this.pos] == '='){
+                    this.advance();
+                    return new Token(TokenType.ASSIGN, ":=");
+                }
+                return new Token(TokenType.COLON, ":");
+            }
+
+            if(newChar == '.'){
+                this.advance();
+                if(this.text[this.pos] == '.'){
+                    this.advance();
+                    return new Token(TokenType.RANGE, "..");
+                }
+            }
+
+
 
             this.advance();
             return new Token(TokenType.ERROR, newChar.ToString());

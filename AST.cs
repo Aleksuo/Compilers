@@ -19,6 +19,13 @@ namespace Mini_PL_Interpreter
 
     }
 
+    class stmtsNode : AST{
+        public List<AST> children;
+        public stmtsNode(List<AST> children)
+        {this.children = children;
+        }
+    }
+
     class numNode : AST{
         public numNode(Token number) 
         : base(null,null,number){}
@@ -32,5 +39,15 @@ namespace Mini_PL_Interpreter
     class unaryOpNode : AST{
         public unaryOpNode(AST left, Token op)
         : base(left, null, op){}
+    }
+
+    class assignNode : AST{
+        public assignNode(AST left, AST right, Token op)
+         : base(left,right,op){}
+    }
+
+    class varNode : AST{
+        public varNode(Token var) 
+        : base(null,null,var);
     }
 }

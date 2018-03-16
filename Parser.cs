@@ -20,6 +20,51 @@ namespace Mini_PL_Interpreter
             return this.expr();
         }
 
+        public AST prog(){
+            //<prog> ::= <stmts>
+            return this.stmts();
+        }
+
+        public AST stmts(){
+            //<stmts> ::= <stmt> ";" (<stmt> ";")*
+            List<AST> stmts = new List<AST>();
+            AST node = this.stmt();
+            stmts.Add(node);
+            while(this.currentToken.getType() == TokenType.SEMICOLON){
+                this.eatToken(TokenType.SEMICOLON);
+                smts.Add(this.stmt());
+            }
+            return new stmtsNode(stmts);
+        }
+
+        public AST stmt(){
+            Token token = this.currentToken();
+            TokenType tokenT = token.getType();
+            if(tokenT == TokenType.VAR){
+                //<stmt> ::= "var" <var_ident> ":" <type> [ ":=" <expr> ]
+                this.eatToken(TokenType.VAR);
+                AST ident = this.var_ident();
+                this.eatToken(TokenType.COLON);
+                tokenT = this.currentToken.getType();
+                if(tokenT == TokenType.INT){
+                    this.eatToken(TokenType.INT);
+                }else if(tokenT == TokenType.STRING){
+                    this.eatToken(TokenType.STRING)
+                }else if(tokenT == TokenType.BOOL){
+                    this.eatToken(TokenType.BOOL);
+                }
+                token = this.currentToken;
+                this.eatToken(TokenType.ASSIGN);
+                return new assignNode(ident, this.expr(), token);
+            }else if(tokenT == TokenType.ID){
+                AST ident = this.var_ident();
+                token = this.currentToken();
+                this.eatToken(TokenType.ASSIGN);
+                return new assignNode(ident, this.expr(), token);
+            }
+        }
+
+
         public void eatToken(TokenType expected)
         {
             if(this.currentToken.getType() == expected)
