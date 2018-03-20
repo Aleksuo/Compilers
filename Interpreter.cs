@@ -59,7 +59,12 @@ namespace Mini_PL_Interpreter
 
         public void visit_assignNode(AST node)
         {
-            symbols[node.left.token.getLexeme()] = this.visit(node.right);
+            string name = node.left.token.getLexeme();
+            if(node.right != null)
+            {
+                symbols[name] = this.visit(node.right);
+            }
+            symbols[name] = null;         
         }
 
         public object visit_unaryOpNode(AST node){
