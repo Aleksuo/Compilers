@@ -11,9 +11,9 @@ namespace Mini_PL_Interpreter
     {
         public NodeVisitor(){}
 
-        public int visit(AST node){
+        public object visit(AST node){
             MethodInfo mi = this.GetType().GetMethod("visit_"+node.GetType().Name);
-            return (int)mi.Invoke(this,new object[]{node});
+            return mi.Invoke(this,new object[]{node});
         }
     }
 }

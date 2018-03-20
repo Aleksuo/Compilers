@@ -83,10 +83,10 @@ namespace Mini_PL_Interpreter
                 }
                 this.advance();
             }
-            if(reserved_keywords.ContainsKey(id.toString())){
-                return reserved_keywords.TryGetValue(id.toString());
+            if(reserved_keywords.ContainsKey(id.ToString())){
+                return reserved_keywords[id.ToString()];
             }
-            return new Token(TokenType.ID, id.toString());
+            return new Token(TokenType.ID, id.ToString());
         }
 
         public Token nextToken()
@@ -150,12 +150,26 @@ namespace Mini_PL_Interpreter
                 return this.identifier();
             }
 
+            if(newChar == '"')
+            {
+                this.advance();
+                StringBuilder str = new StringBuilder();
+                while(this.text[this.pos] != '"' && this.pos < this.text.Length)
+                {
+                    str.Append(this.text[this.pos]);
+                    this.advance();
+                }
+                this.advance();
+                return new Token(TokenType.STR, str.ToString());
+            }
+
             if(newChar == ';'){
-                return new Token(TokenType.SEMICOLON, newChar.toString());
+                this.advance();
+                return new Token(TokenType.SEMICOLON, newChar.ToString());
             }
 
             if(newChar == ':'){
-                this.advance()
+                this.advance();
                 if(this.text[this.pos] == '='){
                     this.advance();
                     return new Token(TokenType.ASSIGN, ":=");

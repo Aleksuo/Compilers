@@ -9,40 +9,84 @@ namespace Mini_PL_Interpreter
     class Interpreter : NodeVisitor
     {
         private Parser parser;
+        public Dictionary<string, object> symbols;
+
         public Interpreter(Parser parser)
         {
             this.parser = parser;
-        }    
+            this.symbols = new Dictionary<string, object>();
+        }
+        
+        public object visit_varNode(AST node)
+        {
+            string name = node.token.getLexeme();
+            object value = this.symbols[name];
+            if(value == null)
+            {
+                Console.WriteLine("Error variable " + name + " has no value.");
+            }
+            return value;
+        }
 
-        public int  visit_numNode(AST node){
+        
+        public object  visit_numNode(AST node){
             return Int32.Parse(node.token.getLexeme());
         }
 
-        public int visit_unaryOpNode(AST node){
-            TokenType type = node.token.getType();
-            if(type == TokenType.PLUS){
-                return +this.visit(node.left);
-            }else if(type == TokenType.MINUS){
-                return -this.visit(node.left);
-            }
-            return 0;
+        public object visit_strNode(AST node)
+        {
+            return node.token.getLexeme();
         }
 
-        public int visit_opNode(AST node){
+        public void visit_printNode(AST node)
+        {
+            Console.WriteLine(this.visit(node.left).ToString());
+        }
+
+        public void visit_readNode(AST node)
+        {
+            object input = Console.ReadLine();
+            this.symbols[node.left.token.getLexeme()] = input;
+        }
+
+        public void visit_stmtsNode(AST node)
+        {
+            foreach(AST n in node.children)
+            {
+                this.visit(n);
+            }
+        }
+
+        public void visit_assignNode(AST node)
+        {
+            symbols[node.left.token.getLexeme()] = this.visit(node.right);
+        }
+
+        public object visit_unaryOpNode(AST node){
             TokenType type = node.token.getType();
             if(type == TokenType.PLUS){
-                return this.visit(node.left)+this.visit(node.right);
+                return +(int)this.visit(node.left);
             }else if(type == TokenType.MINUS){
-                return this.visit(node.left)-this.visit(node.right);
+                return -(int)this.visit(node.left);
+            }
+            return null;
+        }
+
+        public object visit_opNode(AST node){
+            TokenType type = node.token.getType();
+            if(type == TokenType.PLUS){
+                return (int)this.visit(node.left)+(int)this.visit(node.right);
+            }else if(type == TokenType.MINUS){
+                return (int)this.visit(node.left)-(int)this.visit(node.right);
             }else if(type == TokenType.MULT){
-                return this.visit(node.left)*this.visit(node.right);
+                return (int)this.visit(node.left)*(int)this.visit(node.right);
             }else if(type == TokenType.DIV){
-                return this.visit(node.left)/this.visit(node.right);
+                return (int)this.visit(node.left)/(int)this.visit(node.right);
             }
-            return 0;
+            return null;
         }
 
-        public int run(){
+        public object run(){
             AST tree = this.parser.parse();
             return this.visit(tree);
         }

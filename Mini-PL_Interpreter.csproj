@@ -42,8 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NodeVisitor.cs"/>  
-    <Compile Include="AST.cs" />
+    <Compile Include="Utils\NodeVisitor.cs" />
+    <Compile Include="Utils\AST.cs" />
     <Compile Include="Interpreter.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Scanner.cs" />
@@ -54,8 +54,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tokens\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

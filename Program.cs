@@ -14,7 +14,7 @@ namespace Mini_PL_Interpreter
             Scanner scanner = new Scanner(input);
             Parser parser = new Parser(scanner);
             Interpreter interpreter = new Interpreter(parser);
-            Console.WriteLine(interpreter.run());
+            interpreter.run();
             Console.ReadKey();
         }
     }

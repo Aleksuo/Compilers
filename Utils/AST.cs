@@ -10,7 +10,8 @@ namespace Mini_PL_Interpreter
     {
         public AST left, right;
         public Token token;
-        
+        public List<AST> children;
+
         public AST(AST left, AST right, Token token){
             this.left = left;
             this.right = right;
@@ -20,9 +21,10 @@ namespace Mini_PL_Interpreter
     }
 
     class stmtsNode : AST{
-        public List<AST> children;
         public stmtsNode(List<AST> children)
-        {this.children = children;
+            :base(null,null,null)
+        {
+            this.children = children;
         }
     }
 
@@ -46,8 +48,26 @@ namespace Mini_PL_Interpreter
          : base(left,right,op){}
     }
 
+    class printNode : AST
+    {
+        public printNode(AST expr)
+            : base(expr, null, null){}
+    }
+
+    class readNode : AST
+    {
+        public readNode(AST var)
+            : base(var, null, null) {}
+    }
+
+    class strNode : AST
+    {
+        public strNode(Token str)
+            : base(null, null, str) {}
+    }
+
     class varNode : AST{
-        public varNode(Token var) 
-        : base(null,null,var);
+        public varNode(Token var)
+        : base(null, null, var) { }
     }
 }
