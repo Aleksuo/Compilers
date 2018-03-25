@@ -1,9 +1,0 @@
-C:\Users\Aleksi\source\repos\Mini-PL_Interpreter\Mini-PL_Interpreter\bin\Debug\Mini-PL_Interpreter.exe.config
-C:\Users\Aleksi\source\repos\Mini-PL_Interpreter\Mini-PL_Interpreter\bin\Debug\Mini-PL_Interpreter.exe
-C:\Users\Aleksi\source\repos\Mini-PL_Interpreter\Mini-PL_Interpreter\bin\Debug\Mini-PL_Interpreter.pdb
-C:\Users\Aleksi\source\repos\Mini-PL_Interpreter\Mini-PL_Interpreter\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
-C:\Users\Aleksi\source\repos\Mini-PL_Interpreter\Mini-PL_Interpreter\obj\Debug\Mini_PL.csproj.CoreCompileInputs.cache
-C:\Users\Aleksi\source\repos\Mini-PL_Interpreter\Mini-PL_Interpreter\obj\Debug\Mini_PL.csproj.CopyComplete
-C:\Users\Aleksi\source\repos\Mini-PL_Interpreter\Mini-PL_Interpreter\obj\Debug\Mini-PL_Interpreter.exe
-C:\Users\Aleksi\source\repos\Mini-PL_Interpreter\Mini-PL_Interpreter\obj\Debug\Mini-PL_Interpreter.pdb
-C:\Users\Aleksi\source\repos\Mini-PL_Interpreter\Mini-PL_Interpreter\obj\Debug\Mini_PL.csprojResolveAssemblyReference.cache

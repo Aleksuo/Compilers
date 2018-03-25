@@ -55,7 +55,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mini-PL_Interpreter\Mini_PL.csproj">
+    <ProjectReference Include="..\Mini_PL\Mini_PL.csproj">
       <Project>{63a1e6fe-48b7-49e8-8364-36345f812cbf}</Project>
       <Name>Mini_PL</Name>
     </ProjectReference>
