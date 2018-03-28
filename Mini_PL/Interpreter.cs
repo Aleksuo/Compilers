@@ -82,6 +82,11 @@ namespace Mini_PL
             
         }
 
+        public void visit_assertNode(AST node)
+        {
+            Console.WriteLine((bool)this.visit(node.left));
+        }
+
         public void visit_stmtsNode(AST node)
         {
             foreach(AST n in node.children)

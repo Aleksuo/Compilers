@@ -110,6 +110,13 @@ namespace Mini_PL
                 //<stmt> ::= "read" <var_ident>
                 this.eatToken(TokenType.READ);
                 return new readNode(this.var_ident());
+            }else if (tokenT == TokenType.ASSERT)
+            {
+                this.eatToken(TokenType.ASSERT);
+                this.eatToken(TokenType.LEFTPAREN);
+                AST expr = new assertNode(this.expr());
+                this.eatToken(TokenType.RIGHTPAREN);
+                return expr;
             }
             return null;
         }

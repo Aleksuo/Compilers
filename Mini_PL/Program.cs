@@ -14,7 +14,7 @@ namespace Mini_PL
         {
             try
             {
-                FileSource source = new FileSource("Example_Programs/test.mpl");
+                FileSource source = new FileSource("Example_Programs/example3.mpl");
                 Scanner scanner = new Scanner(source);
                 Parser parser = new Parser(scanner);
                 Interpreter interpreter = new Interpreter(parser);

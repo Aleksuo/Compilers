@@ -61,6 +61,7 @@
     <None Include="App.config" />
     <None Include="Example_Programs\boolean.mpl" />
     <None Include="Example_Programs\example1.mpl" />
+    <None Include="Example_Programs\example3.mpl" />
     <None Include="Example_Programs\test.mpl" />
   </ItemGroup>
   <ItemGroup />
