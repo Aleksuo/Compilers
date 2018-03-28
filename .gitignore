@@ -1,2 +1,10 @@
-bin
-obj
+Mini_PL_Tests/bin
+Mini_PL_Tests/obj
+Mini_PL/Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+Mini_PL/Mini_PL.exe
+Mini_PL/Mini_PL.exe.config
+Mini_PL/Mini_PL.pdb
+packages
+.axoCover
+.vs
+TestResults

@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mini_PL_Interpreter
+namespace Mini_PL.Utils
 {
-    abstract class Source
+    public class SymbolTable
     {
     }
 }

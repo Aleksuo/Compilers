@@ -4,17 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mini_PL_Interpreter
+namespace Mini_PL.Lexical_Analysis
 {
-    public enum TokenType
-    {
-        PLUS, MINUS, MULT, DIV, INTEGER,
-        EOF, ERROR, LEFTPAREN, RIGHTPAREN,
-        AND, OR, COLON, SEMICOLON, ID, FOR,
-        IN, DO 
-    }
-
-    class Token
+    public class Token
     {
         private TokenType type;
         private string lexeme;
