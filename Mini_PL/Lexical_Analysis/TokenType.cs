@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mini_PL
+namespace Mini_PL.Lexical_Analysis
 {
     public enum TokenType
     {
         //Operators
-        PLUS, MINUS, MULT, DIV, AND, OR, NOT, EQUALS, LESSTHAN,
+        PLUS, MINUS, MULT, DIV, AND, NOT, EQUALS, LESSTHAN,
         //Value types
         INTEGER, STRING, BOOLEAN,
         //Keywords

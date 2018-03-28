@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mini_PL
+namespace Mini_PL.Utils
 {
     public class SymbolTable
     {

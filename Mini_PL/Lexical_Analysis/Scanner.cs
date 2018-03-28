@@ -3,20 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Mini_PL.Utils.Source;
 
-namespace Mini_PL
+namespace Mini_PL.Lexical_Analysis
 {
     public class Scanner
     {
-        private int pos;
-        private string text;
+        private ISource source;
+        private int lineCount;
+       
 
         private Dictionary<string, Token> reserved_keywords;
         private Dictionary<char, Token> singleCharTokens;
 
-        public Scanner(string text){
-            this.text = text;
-            this.pos = 0;
+        public Scanner(ISource source){
+            this.source = source;
+            this.lineCount = 1;
             initKeywords();
             initSingleCharTokens();
         }
@@ -57,35 +59,19 @@ namespace Mini_PL
 
         }
 
-
-         public void advance()
+        public void increaseLineCount()
         {
-            this.pos++;
+            this.lineCount++;
         }
-
-        public char? peekNextChar()
-        {
-            if(this.pos+1 > text.Length - 1)
-            {
-                return null;
-            }
-            else
-            {
-                return text[this.pos + 1];
-            }
-        }
-
-
-
 
         public Token integer()
         {
             StringBuilder number = new StringBuilder();
-            number.Append(this.text[this.pos]);
+            number.Append(this.source.currentChar());
             bool error = false;
             while (true)
             {
-                char? peek = this.peekNextChar();
+                char? peek = this.source.peekNextChar();
                 if (peek == null || !Char.IsLetterOrDigit((char)peek))
                 {
                     break;
@@ -94,10 +80,10 @@ namespace Mini_PL
                     error = true;
                 }
                     
-                this.advance();
-                number.Append(this.text[this.pos]);
+                this.source.advance();
+                number.Append(this.source.currentChar());
             }
-            this.advance();
+            this.source.advance();
             if(number[0]=='0' && number.Length > 1 || error)
             {
                 return new Token(TokenType.ERROR, number.ToString());
@@ -108,14 +94,16 @@ namespace Mini_PL
 
         public Token identifier(){
             StringBuilder id = new StringBuilder();
-            while(Char.IsLetter(this.text[this.pos]) 
-            || Char.IsDigit(this.text[this.pos])){
-                id.Append(this.text[this.pos]);
-                if(this.peekNextChar() == null){
-                    this.advance();
+            char cur = (char)this.source.currentChar();
+            while(Char.IsLetter(cur) 
+            || Char.IsDigit(cur)){
+                id.Append(cur);
+                if(this.source.peekNextChar() == null){
+                    this.source.advance();
                     break;
                 }
-                this.advance();
+                this.source.advance();
+                cur = (char)this.source.currentChar();
             }
             if(reserved_keywords.ContainsKey(id.ToString())){
                 return reserved_keywords[id.ToString()];
@@ -125,10 +113,10 @@ namespace Mini_PL
 
         public Token range()
         {
-            this.advance();
-            if (this.text[this.pos] == '.')
+            this.source.advance();
+            if (this.source.currentChar() == '.')
             {
-                this.advance();
+                this.source.advance();
                 return new Token(TokenType.RANGE, "..");
             }
             return new Token(TokenType.ERROR, ".");
@@ -136,72 +124,152 @@ namespace Mini_PL
 
         public Token colonOrAssign()
         {
-            this.advance();
-            if (this.pos < this.text.Length && this.text[this.pos] == '=')
+            this.source.advance();
+            if (this.source.currentChar() !=null && this.source.currentChar() == '=')
             {
-                this.advance();
+                this.source.advance();
                 return new Token(TokenType.ASSIGN, ":=");
             }
             return new Token(TokenType.COLON, ":");
         }
 
+        public Token stringToken()
+        {
+            this.source.advance();
+            StringBuilder str = new StringBuilder();
+            while (this.source.currentChar() != null && this.source.currentChar() != '"')
+            {
+                str.Append(this.source.currentChar());
+                this.source.advance();
+            }
+            this.source.advance();
+            return new Token(TokenType.STRING, str.ToString());
+        }
+
+        public bool skipWhiteSpaceAndNewLines()
+        {
+            char? cur = this.source.currentChar();
+            if(cur != null && (cur == ' ' || cur == '\n' || cur == '\r'|| cur == '\t'))
+            {
+                while (cur != null && (cur == ' ' || cur == '\n' || cur == '\r' || cur == '\t'))
+                {
+                    if (cur == '\n')
+                    {
+                        this.increaseLineCount();
+                    }
+                    this.source.advance();
+                    cur = this.source.currentChar();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public bool skipSingleLineComment()
+        {
+            char? cur = this.source.currentChar();
+            char? next = this.source.peekNextChar();
+            if(cur == '/' && next == '/')
+            {
+                while(cur !=null && cur != '\n' && cur != '\r')
+                {
+                    this.source.advance();
+                    cur = this.source.currentChar();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public bool skipMultiLineComment()
+        {
+            char? cur = this.source.currentChar();
+            char? next = this.source.peekNextChar();
+            if(cur == '/' && next == '*')
+            {
+                this.source.advance();
+                this.source.advance();
+                while (true)
+                {
+                    cur = this.source.currentChar();
+                    next = this.source.peekNextChar();
+                    if(cur == null || (cur == '*' && next == '/'))
+                    {
+                        this.source.advance();
+                        this.source.advance();
+                        break;
+                    }else if(cur == '/' && next == '*')
+                    {
+                        skipMultiLineComment();
+                    }
+                    if(cur == '\n')
+                    {
+                        this.increaseLineCount();
+                    }
+                    this.source.advance();
+                }
+                return true;
+            }
+            return false;
+        }
+
         public Token nextToken()
         {
-            while(this.pos < text.Length && this.text[this.pos] == ' ')
+            //scan input
+            bool scanning = true;
+            while (scanning)
             {
-                this.advance();
+                scanning = false;
+                if (skipSingleLineComment())
+                    scanning = true;
+                if (skipWhiteSpaceAndNewLines())
+                    scanning = true;
+                if (skipMultiLineComment())
+                    scanning = true;
             }
 
-            if(this.pos > text.Length - 1)
+            //recognize next token
+            if(this.source.currentChar() != null)
             {
-                return new Token(TokenType.EOF, "");
-            }
-      
-
-            char newChar = this.text[this.pos];
-            if (singleCharTokens.ContainsKey(newChar))
-            {
-                this.advance();
-                return singleCharTokens[newChar];
-            }
-           
-
-            if (Char.IsDigit(newChar))
-            {
-                return this.integer();
-            }
-
-            if (Char.IsLetter(newChar)){
-                return this.identifier();
-            }
-
-            if(newChar == '"')
-            {
-                this.advance();
-                StringBuilder str = new StringBuilder();
-                while(this.pos < this.text.Length && this.text[this.pos] != '"')
+                char newChar = (char)this.source.currentChar();
+                if (singleCharTokens.ContainsKey(newChar))
                 {
-                    str.Append(this.text[this.pos]);
-                    this.advance();
+                    this.source.advance();
+                    return singleCharTokens[newChar];
                 }
-                this.advance();
-                return new Token(TokenType.STRING, str.ToString());
+                else if (Char.IsDigit(newChar))
+                {
+                    return this.integer();
+                }
+                else if (Char.IsLetter(newChar))
+                {
+                    return this.identifier();
+                }
+                else if (newChar == '"')
+                {
+                    return this.stringToken();
+                }
+                else if (newChar == ':')
+                {
+                    return this.colonOrAssign();
+                }
+                else if (newChar == '.')
+                {
+                    return this.range();
+                }
+
+                this.source.advance();
+                return new Token(TokenType.ERROR, newChar.ToString());
             }
+            return new Token(TokenType.EOF, "eof");
 
-            
-            if(newChar == ':'){
-                return this.colonOrAssign();
-            }
+        }
 
-            if(newChar == '.'){
-                return this.range();
-            }
-
-
-
-            this.advance();
-            return new Token(TokenType.ERROR, newChar.ToString());
+        public int getLineCount()
+        {
+            return this.lineCount;
         }
 
     }
+   
 }

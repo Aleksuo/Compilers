@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Mini_PL.Lexical_Analysis;
 
-namespace Mini_PL
+namespace Mini_PL.Utils
 {
     public class AST
     {
@@ -26,6 +27,21 @@ namespace Mini_PL
         {
             this.children = children;
         }
+    }
+
+    class forNode : AST
+    {
+        public forNode(List<AST> children)
+        : base(null,null,null)
+        {
+            this.children = children;
+        }
+    }
+
+    class rangeNode : AST
+    {
+        public rangeNode(AST from, AST to, Token token)
+            : base(from, to, token) { }
     }
 
     class numNode : AST{
@@ -72,8 +88,20 @@ namespace Mini_PL
             : base(null, null, str) {}
     }
 
+    class boolNode : AST
+    {
+        public boolNode(Token b)
+            : base(null, null, b) { }
+    }
+
     class varNode : AST{
         public varNode(Token var)
         : base(null, null, var) { }
+    }
+
+    class typeNode : AST
+    {
+        public typeNode(Token type)
+        : base(null, null, type) { }
     }
 }

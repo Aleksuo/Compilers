@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 
-namespace Mini_PL
+namespace Mini_PL.Utils
 {
     public class NodeVisitor
     {
