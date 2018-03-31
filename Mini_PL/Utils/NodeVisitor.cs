@@ -12,8 +12,16 @@ namespace Mini_PL.Utils
         public NodeVisitor(){}
 
         public object visit(AST node){
-            MethodInfo mi = this.GetType().GetMethod("visit_"+node.GetType().Name);
-            return mi.Invoke(this,new object[]{node});
+            if(node != null)
+            {
+                MethodInfo mi = this.GetType().GetMethod("visit_" + node.GetType().Name);
+                if (mi == null)
+                {
+                    return null;
+                }
+                return mi.Invoke(this, new object[] { node });
+            }
+            return null;
         }
     }
 }

@@ -5,29 +5,73 @@ using System.Text;
 using System.Threading.Tasks;
 using Mini_PL.Utils;
 using Mini_PL.Lexical_Analysis;
+using Mini_PL.Error_Handling;
+using Mini_PL.Error_Handling.Messages;
 
-namespace Mini_PL
+namespace Mini_PL.Parsing
 {
-    class Parser
+    class Parser : IHookable
     {
         private Scanner scanner;
         private Token currentToken;
 
+        private bool panic;
+
+        public ErrorHook hook { get ; set ; }
+
         public Parser(Scanner scanner){
+            this.hook = new ErrorHook();
             this.scanner = scanner;
             this.currentToken = this.scanner.nextToken();
+            this.panic = false;
         }
 
-        public void eatToken(TokenType expected)
+        public AST checkStatus(AST node)
         {
-            if (this.currentToken.getType() == expected)
+            if (panic)
+            {
+                return new errorNode(null, null);
+            }
+            return node;
+        }
+
+        public void enterPanicMode()
+        {
+            this.panic = true;
+            TokenType cur = this.currentToken.getType();
+            while(cur != TokenType.SEMICOLON && cur != TokenType.EOF)
+            {
+                this.currentToken = this.scanner.nextToken();
+                cur = this.currentToken.getType();
+            }
+        }
+
+        public void eatToken(TokenType expected) {
+
+            TokenType type = this.currentToken.getType();
+            if(panic && expected == type)
+            {
+                this.panic = false;
+            }
+            if (panic)
+                return;
+
+            
+            if (type == expected)
             {
                 this.currentToken = this.scanner.nextToken();
             }
             else
             {
-                Console.WriteLine("Error during parsing, found: "+ this.currentToken.toString()+" expected: "+expected.ToString());
-                Console.ReadKey();
+                if(type == TokenType.ERROR)
+                {
+                    this.ThrowErrorMessage(new LexicalError(this.currentToken));
+                }
+                else
+                {
+                    this.ThrowErrorMessage(new SyntaxError(this.currentToken));
+                }
+                this.enterPanicMode();
             }
         }
 
@@ -60,31 +104,33 @@ namespace Mini_PL
             {
                 //<stmt> ::= "var" <var_ident> ":" <type> [ ":=" <expr> ]
                 this.eatToken(TokenType.VAR);
-                AST ident = this.var_ident();
+                AST ident = this.checkStatus(this.var_ident());
                 this.eatToken(TokenType.COLON);
+                AST type = this.checkStatus(new typeNode(this.currentToken));
                 this.eatToken(TokenType.TYPE);
+                ident.left = type;
                 token = this.currentToken;
                 tokenT = token.getType();
                 if (tokenT == TokenType.ASSIGN)
                 {
                     this.eatToken(TokenType.ASSIGN);
-                    return new assignNode(ident, this.expr(), token);
+                    return this.checkStatus(new vardeclNode(ident, this.expr(), token));
                 }
-                return new assignNode(ident, null, token);
+                return this.checkStatus(new vardeclNode(ident, null, token));
 
             } else if(tokenT == TokenType.FOR)
             {
                 //<stmt> ::= "for" <var_ident> "in" <expr> ".." <expr> "do" <stmts> "end" "for"
                 this.eatToken(TokenType.FOR);
-                AST ident = this.var_ident();
+                AST ident = this.checkStatus(this.var_ident());
                 this.eatToken(TokenType.IN);
-                AST leftExpr = this.expr();
+                AST leftExpr = this.checkStatus(this.expr());
                 token = this.currentToken;
                 this.eatToken(TokenType.RANGE);
-                AST rightExpr = this.expr();
-                rangeNode range = new rangeNode(leftExpr, rightExpr, token);
+                AST rightExpr =this.checkStatus( this.expr());
+                AST range = this.checkStatus(new rangeNode(leftExpr, rightExpr, token));
                 this.eatToken(TokenType.DO);
-                AST stmts = this.stmts();
+                AST stmts = this.checkStatus(this.stmts());
                 this.eatToken(TokenType.END);
                 this.eatToken(TokenType.FOR);
 
@@ -92,47 +138,47 @@ namespace Mini_PL
                 nodes.Add(ident);
                 nodes.Add(range);
                 nodes.Add(stmts);
-                return new forNode(nodes);
+                return this.checkStatus(new forNode(nodes));
             } else if (tokenT == TokenType.ID)
             {
                 //<stmt> ::= <var_ident> ":=" <expr>
                 AST ident = this.var_ident();
                 token = this.currentToken;
                 this.eatToken(TokenType.ASSIGN);
-                return new assignNode(ident, this.expr(), token);
+                return this.checkStatus(new assignNode(ident, this.expr(), token));
             } else if (tokenT == TokenType.PRINT)
             {
                 //<stmt> ::= "print" <expr>
                 this.eatToken(TokenType.PRINT);
-                return new printNode(this.expr());
+                return this.checkStatus(new printNode(this.expr(), token));
             } else if (tokenT == TokenType.READ)
             {
                 //<stmt> ::= "read" <var_ident>
                 this.eatToken(TokenType.READ);
-                return new readNode(this.var_ident());
+                return this.checkStatus(new readNode(this.var_ident(), token));
             }else if (tokenT == TokenType.ASSERT)
             {
                 this.eatToken(TokenType.ASSERT);
                 this.eatToken(TokenType.LEFTPAREN);
-                AST expr = new assertNode(this.expr());
+                AST expr = new assertNode(this.expr(), token);
                 this.eatToken(TokenType.RIGHTPAREN);
-                return expr;
+                return this.checkStatus(expr);
             }
-            return null;
+            return new errorNode(null,null);
         }
 
         public AST var_ident()
         {
             Token cur = this.currentToken;
             this.eatToken(TokenType.ID);
-            return new varNode(cur);
+            return this.checkStatus(new varNode(cur));
         }
 
         public AST str()
         {
             Token cur = this.currentToken;
             this.eatToken(TokenType.STRING);
-            return new strNode(cur);
+            return this.checkStatus(new strNode(cur));
         }
 
         public AST expr()
@@ -140,16 +186,10 @@ namespace Mini_PL
             var token = this.currentToken;
             var tokenT = this.currentToken.getType();
             //expr ::= [<unary_op>]<opnd>
-            if(tokenT == TokenType.PLUS){
-                this.eatToken(TokenType.PLUS);
-                return new unaryOpNode(this.opnd(),token);
-            }else if(tokenT == TokenType.MINUS){
-                this.eatToken(TokenType.MINUS);
-                return new unaryOpNode(this.opnd(), token);
-            }else if(tokenT == TokenType.NOT)
+            if (tokenT == TokenType.NOT)
             {
                 this.eatToken(TokenType.NOT);
-                return new unaryOpNode(this.opnd(), token);
+                return this.checkStatus(new unaryOpNode(this.opnd(), token));
             }
 
             //expr ::= <opnd> <op> <opnd>
@@ -187,7 +227,7 @@ namespace Mini_PL
                 return node;
             }
             node = new opNode(node, this.opnd(), token);
-            return node;
+            return this.checkStatus(node);
         }
 
         public AST opnd()
@@ -198,23 +238,23 @@ namespace Mini_PL
             {
                 //<opnd> ::= <int>
                 this.eatToken(TokenType.INTEGER);
-                return new numNode(token);
+                return this.checkStatus(new numNode(token));
             }else if(tokenT == TokenType.LEFTPAREN)
             {
                 //<opnd> ::= "(" expr ")"
                 this.eatToken(TokenType.LEFTPAREN);
                 AST result = this.expr();
                 this.eatToken(TokenType.RIGHTPAREN);
-                return result;
+                return this.checkStatus(result);
             }else if(tokenT == TokenType.ID)
             {
                 //<opnd> ::= <var_ident>
-                return this.var_ident();
+                return this.checkStatus(this.var_ident());
             }else if(tokenT == TokenType.STRING)
             {
-                return this.str();
+                return this.checkStatus(this.str());
             }
-            return null;
+            return new errorNode(null, null);
         }
     }
 }

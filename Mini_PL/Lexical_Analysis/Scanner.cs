@@ -11,6 +11,7 @@ namespace Mini_PL.Lexical_Analysis
     {
         private ISource source;
         private int lineCount;
+        private int colCount;
        
 
         private Dictionary<string, Token> reserved_keywords;
@@ -19,6 +20,7 @@ namespace Mini_PL.Lexical_Analysis
         public Scanner(ISource source){
             this.source = source;
             this.lineCount = 1;
+            this.colCount = 1;
             initKeywords();
             initSingleCharTokens();
         }
@@ -61,7 +63,14 @@ namespace Mini_PL.Lexical_Analysis
 
         public void increaseLineCount()
         {
+            this.colCount = 0;
             this.lineCount++;
+        }
+
+        public void advance()
+        {
+            this.colCount++;
+            this.source.advance();
         }
 
         public Token integer()
@@ -99,24 +108,24 @@ namespace Mini_PL.Lexical_Analysis
             || Char.IsDigit(cur)){
                 id.Append(cur);
                 if(this.source.peekNextChar() == null){
-                    this.source.advance();
+                    this.advance();
                     break;
                 }
-                this.source.advance();
+                this.advance();
                 cur = (char)this.source.currentChar();
             }
             if(reserved_keywords.ContainsKey(id.ToString())){
                 return reserved_keywords[id.ToString()];
             }
-            return new Token(TokenType.ID, id.ToString());
+            return new Token(TokenType.ID, id.ToString(),this.lineCount, this.colCount-1);
         }
 
         public Token range()
         {
-            this.source.advance();
+            this.advance();
             if (this.source.currentChar() == '.')
             {
-                this.source.advance();
+                this.advance();
                 return new Token(TokenType.RANGE, "..");
             }
             return new Token(TokenType.ERROR, ".");
@@ -124,10 +133,10 @@ namespace Mini_PL.Lexical_Analysis
 
         public Token colonOrAssign()
         {
-            this.source.advance();
+            this.advance();
             if (this.source.currentChar() !=null && this.source.currentChar() == '=')
             {
-                this.source.advance();
+                this.advance();
                 return new Token(TokenType.ASSIGN, ":=");
             }
             return new Token(TokenType.COLON, ":");
@@ -135,14 +144,14 @@ namespace Mini_PL.Lexical_Analysis
 
         public Token stringToken()
         {
-            this.source.advance();
+            this.advance();
             StringBuilder str = new StringBuilder();
             while (this.source.currentChar() != null && this.source.currentChar() != '"')
             {
                 str.Append(this.source.currentChar());
-                this.source.advance();
+                this.advance();
             }
-            this.source.advance();
+            this.advance();
             return new Token(TokenType.STRING, str.ToString());
         }
 
@@ -157,7 +166,7 @@ namespace Mini_PL.Lexical_Analysis
                     {
                         this.increaseLineCount();
                     }
-                    this.source.advance();
+                    this.advance();
                     cur = this.source.currentChar();
                 }
                 return true;
@@ -173,7 +182,7 @@ namespace Mini_PL.Lexical_Analysis
             {
                 while(cur !=null && cur != '\n' && cur != '\r')
                 {
-                    this.source.advance();
+                    this.advance();
                     cur = this.source.currentChar();
                 }
                 return true;
@@ -187,16 +196,16 @@ namespace Mini_PL.Lexical_Analysis
             char? next = this.source.peekNextChar();
             if(cur == '/' && next == '*')
             {
-                this.source.advance();
-                this.source.advance();
+                this.advance();
+                this.advance();
                 while (true)
                 {
                     cur = this.source.currentChar();
                     next = this.source.peekNextChar();
                     if(cur == null || (cur == '*' && next == '/'))
                     {
-                        this.source.advance();
-                        this.source.advance();
+                        this.advance();
+                        this.advance();
                         break;
                     }else if(cur == '/' && next == '*')
                     {
@@ -206,7 +215,7 @@ namespace Mini_PL.Lexical_Analysis
                     {
                         this.increaseLineCount();
                     }
-                    this.source.advance();
+                    this.advance();
                 }
                 return true;
             }
@@ -234,7 +243,7 @@ namespace Mini_PL.Lexical_Analysis
                 char newChar = (char)this.source.currentChar();
                 if (singleCharTokens.ContainsKey(newChar))
                 {
-                    this.source.advance();
+                    this.advance();
                     return singleCharTokens[newChar];
                 }
                 else if (Char.IsDigit(newChar))
@@ -258,7 +267,7 @@ namespace Mini_PL.Lexical_Analysis
                     return this.range();
                 }
 
-                this.source.advance();
+                this.advance();
                 return new Token(TokenType.ERROR, newChar.ToString());
             }
             return new Token(TokenType.EOF, "eof");
