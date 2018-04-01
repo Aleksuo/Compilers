@@ -56,7 +56,7 @@ namespace Mini_PL
                     Console.WriteLine("Program couldn't be executed due to errors.");
                 }
                 
-                //Console.ReadKey();
+                Console.ReadKey();
             }
             catch(Exception ex)
             {

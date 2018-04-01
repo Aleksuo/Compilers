@@ -150,8 +150,30 @@ namespace Mini_PL.Lexical_Analysis
             StringBuilder str = new StringBuilder();
             while (this.source.currentChar() != null && this.source.currentChar() != '"')
             {
-                str.Append(this.source.currentChar());
-                this.advance();
+                if(this.source.currentChar() == '\\' )
+                {
+                    if(this.source.peekNextChar() == 'n')
+                    {
+                        str.Append('\n');
+                        this.advance();
+                        this.advance();
+                    }else if(this.source.peekNextChar() == '"')
+                    {
+                        str.Append('"');
+                        this.advance();
+                        this.advance();
+                    }
+                    else
+                    {
+                        str.Append(this.source.currentChar());
+                    }
+                }
+                else
+                {
+                    str.Append(this.source.currentChar());
+                    this.advance();
+                }
+               
             }
             this.advance();
             return new Token(TokenType.STRING, str.ToString(),this.lineCount);

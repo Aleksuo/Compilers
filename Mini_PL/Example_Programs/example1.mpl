@@ -1,2 +1,2 @@
-﻿var x : bool := "string"<"test";
-assert (x);
+﻿var X : int := 4 + (6 * 2);
+print X;

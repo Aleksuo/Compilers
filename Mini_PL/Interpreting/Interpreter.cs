@@ -53,16 +53,20 @@ namespace Mini_PL.Interpreting
             AST var = node.children[0];
             AST range = node.children[1];
             AST stmts = node.children[2];
-            for(int i = (int)visit(range.left); i <= (int)visit(range.right); i++)
+            int left = (int)visit(range.left);
+            int right = (int)visit(range.right);
+            int i;
+            for (i = left; i <= right ; i++)
             {
                 this.memory[var.token.getLexeme()] = i;
                 this.visit(stmts);
             }
+            this.memory[var.token.getLexeme()] = i;
         }
 
         public void visit_printNode(AST node)
         {
-            Console.WriteLine(this.visit(node.left).ToString());
+            Console.Write(this.visit(node.left).ToString());
         }
 
         public void visit_readNode(AST node)
@@ -148,7 +152,7 @@ namespace Mini_PL.Interpreting
                     return (string)this.visit(node.left) + (string)this.visit(node.right);
                 }
             } else if (type == TokenType.MINUS) {
-                return (int)this.visit(node.left) + (int)this.visit(node.right);
+                return (int)this.visit(node.left) - (int)this.visit(node.right);
             } else if (type == TokenType.MULT) {
                 return (int)this.visit(node.left) * (int)this.visit(node.right);
             } else if (type == TokenType.DIV) {
