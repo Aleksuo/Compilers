@@ -11,24 +11,23 @@ namespace Mini_PL.Lexical_Analysis
         private TokenType type;
         private string lexeme;
 
-        public int row;
-        public int col;
+        public int line;
        
 
-        public Token(TokenType type, string lexeme, int row, int col)
+        public Token(TokenType type, string lexeme, int row)
         {
             this.type = type;
             this.lexeme = lexeme;
-            this.row = row;
-            this.col = col;
+            this.line = row;
+            
         }
 
         public Token(TokenType type, string lexeme)
         {
             this.type = type;
             this.lexeme = lexeme;
-            this.row = 0;
-            this.col = 0;
+            this.line = 0;
+            
         }
 
         public TokenType getType()
@@ -39,14 +38,7 @@ namespace Mini_PL.Lexical_Analysis
         public string getLexeme()
         {
             return this.lexeme;
-        }
-
-        public string rowAndCol()
-        {
-            return "(" + this.row + "," + this.col + ")";
-        }
-
-        
+        }     
 
         public string toString()
         {

@@ -1,9 +1,0 @@
-C:\Users\Aleksi\Desktop\Compilers\Mini_PL\obj\Debug\Mini_PL.csprojResolveAssemblyReference.cache
-C:\Users\Aleksi\Desktop\Compilers\Mini_PL\obj\Debug\Mini_PL.csproj.CoreCompileInputs.cache
-C:\Users\Aleksi\Desktop\Compilers\Mini_PL\obj\Debug\Mini_PL.csproj.CopyComplete
-C:\Users\Aleksi\Desktop\Compilers\Mini_PL\Mini_PL.exe.config
-C:\Users\Aleksi\Desktop\Compilers\Mini_PL\obj\Debug\Mini_PL.exe
-C:\Users\Aleksi\Desktop\Compilers\Mini_PL\obj\Debug\Mini_PL.pdb
-C:\Users\Aleksi\Desktop\Compilers\Mini_PL\Mini_PL.exe
-C:\Users\Aleksi\Desktop\Compilers\Mini_PL\Mini_PL.pdb
-C:\Users\Aleksi\Desktop\Compilers\Mini_PL\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll

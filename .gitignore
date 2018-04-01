@@ -4,6 +4,8 @@ Mini_PL/Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
 Mini_PL/Mini_PL.exe
 Mini_PL/Mini_PL.exe.config
 Mini_PL/Mini_PL.pdb
+Mini_PL/bin
+Mini_PL/obj
 packages
 .axoCover
 .vs

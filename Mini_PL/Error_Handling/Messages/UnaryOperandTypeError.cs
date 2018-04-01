@@ -19,7 +19,7 @@ namespace Mini_PL.Error_Handling.Messages
         }
         public void printMessage()
         {
-            Console.WriteLine("Error on line "+ op.token.row + ": Type " + expr.builtinType + " not suported for operator '" + op.token.getLexeme() + "'.");
+            Console.WriteLine("Error on line "+ op.token.line + ": Type " + expr.builtinType + " is not supported for operator '" + op.token.getLexeme() + "'.");
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Mini_PL.Error_Handling.Messages
 
         public void printMessage()
         {
-            Console.WriteLine(var.rowAndCol()+" Error: Variable '" + this.var.getLexeme()+ "' is undeclared.");
+            Console.WriteLine("Error on line "+var.line+": Variable '" + this.var.getLexeme()+ "' is undeclared.");
         }
     }
 }

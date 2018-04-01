@@ -18,7 +18,7 @@ namespace Mini_PL.Error_Handling.Messages
 
         public void printMessage()
         {
-            Console.WriteLine(token.rowAndCol() + " Syntax error: Unexpected symbol '" + token.getLexeme() + "'.");
+            Console.WriteLine("Syntax error on line "+token.line+": Unexpected symbol '" + token.getLexeme() + "'.");
         }
     }
 }

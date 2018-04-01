@@ -21,7 +21,7 @@ namespace Mini_PL.Error_Handling.Messages
         }
         public void printMessage()
         {
-            Console.WriteLine(" Error on line "+this.op.token.row+": Operator '" + op.token.getLexeme() + "' not suported for types " + left.builtinType + " and " + right.builtinType + ".");
+            Console.WriteLine("Error on line "+this.op.token.line+": Operator '" + op.token.getLexeme() + "' is not supported for types " + left.builtinType + " and " + right.builtinType + ".");
         }
     }
 }

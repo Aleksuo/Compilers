@@ -26,7 +26,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>.\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -51,7 +51,7 @@
     <Compile Include="Error_Handling\Messages\SyntaxError.cs" />
     <Compile Include="Error_Handling\Messages\TypeNotSupportedError.cs" />
     <Compile Include="Error_Handling\Messages\UnaryOperandTypeError.cs" />
-    <Compile Include="Error_Handling\Messages\VarDeclTypeMismatch.cs" />
+    <Compile Include="Error_Handling\Messages\VarDeclTypeMismatchError.cs" />
     <Compile Include="Lexical_Analysis\TokenType.cs" />
     <Compile Include="Error_Handling\Messages\IErrorMessage.cs" />
     <Compile Include="Error_Handling\Messages\UndeclaredVariableError.cs" />

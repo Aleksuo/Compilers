@@ -16,7 +16,7 @@ namespace Mini_PL.Error_Handling.Messages
         }
         public void printMessage()
         {
-            Console.WriteLine(token.rowAndCol()+" Error: " + "Duplicate identifier '" + token.getLexeme() + "' found.");
+            Console.WriteLine("Error on line "+token.line+": Duplicate identifier '" + token.getLexeme() + "' found.");
         }
     }
 }

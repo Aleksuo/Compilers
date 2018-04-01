@@ -36,6 +36,10 @@ namespace Mini_PL.Semantic_Analysis
             {
                 this.visit(c);
             }
+            if(node.children[0].builtinType != Utils.Type.INTEGER)
+            {
+                this.ThrowErrorMessage(new TypeNotSupportedError(node, node.children[0]));
+            }
         }
 
         public void visit_vardeclNode(AST node)
@@ -59,7 +63,7 @@ namespace Mini_PL.Semantic_Analysis
                 else
                 {
                     node.builtinType = Utils.Type.ERROR;
-                    this.ThrowErrorMessage(new VarDeclTypeMismatch(node.left, node.right));
+                    this.ThrowErrorMessage(new VarDeclTypeMismatchError(node.left, node.right));
                 }
             }
             else
@@ -90,7 +94,7 @@ namespace Mini_PL.Semantic_Analysis
             else
             {
                 node.builtinType = Utils.Type.ERROR;
-                this.ThrowErrorMessage(new VarDeclTypeMismatch(node.left, node.right));
+                this.ThrowErrorMessage(new VarDeclTypeMismatchError(node.left, node.right));
             }
         }
 
@@ -105,7 +109,7 @@ namespace Mini_PL.Semantic_Analysis
             else
             {
                 node.builtinType = Utils.Type.ERROR;
-                this.ThrowErrorMessage(new VarDeclTypeMismatch(node.left, node.right));
+                this.ThrowErrorMessage(new VarDeclTypeMismatchError(node.left, node.right));
             }
         }
 
@@ -138,6 +142,21 @@ namespace Mini_PL.Semantic_Analysis
             else if (expr == Utils.Type.STRING)
             {
                 node.builtinType = Utils.Type.STRING;
+            }
+            else
+            {
+                node.builtinType = Utils.Type.ERROR;
+                this.ThrowErrorMessage(new TypeNotSupportedError(node, node.left));
+            }
+        }
+
+        public void visit_assertNode(AST node)
+        {
+            this.visit(node.left);
+            Utils.Type expr = node.left.builtinType;
+            if (expr == Utils.Type.BOOLEAN)
+            {
+                node.builtinType = Utils.Type.BOOLEAN;
             }
             else
             {

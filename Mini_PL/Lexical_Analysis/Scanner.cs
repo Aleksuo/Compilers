@@ -95,9 +95,9 @@ namespace Mini_PL.Lexical_Analysis
             this.source.advance();
             if(number[0]=='0' && number.Length > 1 || error)
             {
-                return new Token(TokenType.ERROR, number.ToString());
+                return new Token(TokenType.ERROR, number.ToString(),this.lineCount);
             }
-            return new Token(TokenType.INTEGER, number.ToString());
+            return new Token(TokenType.INTEGER, number.ToString(),this.lineCount);
 
         }
 
@@ -115,9 +115,11 @@ namespace Mini_PL.Lexical_Analysis
                 cur = (char)this.source.currentChar();
             }
             if(reserved_keywords.ContainsKey(id.ToString())){
-                return reserved_keywords[id.ToString()];
+                Token t = reserved_keywords[id.ToString()];
+                t.line = this.lineCount;
+                return t;
             }
-            return new Token(TokenType.ID, id.ToString(),this.lineCount, this.colCount-1);
+            return new Token(TokenType.ID, id.ToString(),this.lineCount);
         }
 
         public Token range()
@@ -126,9 +128,9 @@ namespace Mini_PL.Lexical_Analysis
             if (this.source.currentChar() == '.')
             {
                 this.advance();
-                return new Token(TokenType.RANGE, "..");
+                return new Token(TokenType.RANGE, "..",this.lineCount);
             }
-            return new Token(TokenType.ERROR, ".");
+            return new Token(TokenType.ERROR, ".",this.lineCount);
         }
 
         public Token colonOrAssign()
@@ -137,9 +139,9 @@ namespace Mini_PL.Lexical_Analysis
             if (this.source.currentChar() !=null && this.source.currentChar() == '=')
             {
                 this.advance();
-                return new Token(TokenType.ASSIGN, ":=");
+                return new Token(TokenType.ASSIGN, ":=",this.lineCount);
             }
-            return new Token(TokenType.COLON, ":");
+            return new Token(TokenType.COLON, ":",this.lineCount);
         }
 
         public Token stringToken()
@@ -152,7 +154,7 @@ namespace Mini_PL.Lexical_Analysis
                 this.advance();
             }
             this.advance();
-            return new Token(TokenType.STRING, str.ToString());
+            return new Token(TokenType.STRING, str.ToString(),this.lineCount);
         }
 
         public bool skipWhiteSpaceAndNewLines()
@@ -244,7 +246,9 @@ namespace Mini_PL.Lexical_Analysis
                 if (singleCharTokens.ContainsKey(newChar))
                 {
                     this.advance();
-                    return singleCharTokens[newChar];
+                    Token t = singleCharTokens[newChar];
+                    t.line = this.lineCount;
+                    return t;
                 }
                 else if (Char.IsDigit(newChar))
                 {

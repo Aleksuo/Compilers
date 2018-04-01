@@ -17,7 +17,7 @@ namespace Mini_PL.Error_Handling.Messages
         }
         public void printMessage()
         {
-            Console.WriteLine(token.rowAndCol() + " Error: Unrecognized token '" + token.getLexeme() + "'.");
+            Console.WriteLine("Error on line "+token.line+": Unrecognized token '" + token.getLexeme() + "'.");
         }
     }
 }

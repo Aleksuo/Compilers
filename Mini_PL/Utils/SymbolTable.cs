@@ -45,7 +45,7 @@ namespace Mini_PL.Utils
 
         public void define(Symbol symbol)
         {
-            Console.WriteLine(symbol);
+            //Console.WriteLine(symbol);
             this.symbols[symbol.var] = symbol;
         }
 

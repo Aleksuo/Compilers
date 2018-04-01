@@ -20,7 +20,7 @@ namespace Mini_PL.Error_Handling.Messages
 
         public void printMessage()
         {
-            Console.WriteLine("Error on line "+expr.token.row+": Type " + expr.builtinType + " is not suported for '" + node.token.getLexeme() + "'.");
+            Console.WriteLine("Error on line "+expr.token.line+": Type " + expr.builtinType + " is not supported for '" + node.token.getLexeme() + "'.");
         }
     }
 }

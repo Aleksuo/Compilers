@@ -8,12 +8,12 @@ using Mini_PL.Utils;
 
 namespace Mini_PL.Error_Handling.Messages
 {
-    class VarDeclTypeMismatch : IErrorMessage
+    class VarDeclTypeMismatchError : IErrorMessage
     {
         AST var;
         AST expr;
 
-        public VarDeclTypeMismatch(AST var, AST expr)
+        public VarDeclTypeMismatchError(AST var, AST expr)
         {
             this.var = var;
             this.expr = expr;
@@ -21,7 +21,7 @@ namespace Mini_PL.Error_Handling.Messages
 
         public void printMessage()
         {
-            Console.WriteLine("Error on line " + var.token.row + ": Cannot assign " + expr.builtinType + " to variable of type " + var.builtinType + ".");
+            Console.WriteLine("Error on line " + var.token.line + ": Cannot assign " + expr.builtinType + " to variable of type " + var.builtinType + ".");
         }
     }
 }

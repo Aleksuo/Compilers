@@ -20,7 +20,18 @@ namespace Mini_PL
             try
             {
                 //Initialize
-                FileSource source = new FileSource("Example_Programs/boolean.mpl");
+                string path;
+                if(args.Length == 0)
+                {
+                    Console.WriteLine("Please enter a filepath: ");
+                    path = Console.ReadLine();
+                }
+                else
+                {
+                    path = args[0];
+                }
+                
+                FileSource source = new FileSource(path);
                 ErrorManager errorManager = new ErrorManager();
                 Scanner scanner = new Scanner(source);
                 Parser parser = new Parser(scanner);
@@ -45,10 +56,11 @@ namespace Mini_PL
                     Console.WriteLine("Program couldn't be executed due to errors.");
                 }
                 
-                Console.ReadKey();
+                //Console.ReadKey();
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex);
                 return;
             }
             

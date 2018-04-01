@@ -103,7 +103,18 @@ namespace Mini_PL.Interpreting
             }
             else
             {
-                memory[name] = null;
+                Utils.Type bType = node.builtinType;
+                if(bType == Utils.Type.INTEGER)
+                {
+                    memory[name] = 0;
+                }else if(bType == Utils.Type.STRING)
+                {
+                    memory[name] = "";
+                }else if(bType == Utils.Type.BOOLEAN)
+                {
+                    memory[name] = false;
+                }
+                
             }
         }
 
